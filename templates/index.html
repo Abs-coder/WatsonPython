@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Abhishek</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 450px;
+            background-color: #fff;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .chat-history {
+            height: 450px;
+            overflow-y: scroll;
+            padding: 25px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .user-message {
+            background-color: #4CAF50;
+            color: #fff;
+            text-align: right;
+            float: right;
+        }
+
+        .bot-message {
+            background-color: #007bff;
+            color: #fff;
+            text-align: left;
+            float: left;
+        }
+
+        .input-container {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #user_input {
+            flex: 1;
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 50px;
+        }
+
+        #send-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+   
+    <script>
+        // JavaScript function to clear chat history when page is reloaded
+        window.onload = function () {
+            if (window.performance) {
+                if (performance.navigation.type === 1) {
+                    // Page is reloaded
+                    clearChatHistory();
+                }
+            }
+        };
+        // Function to clear chat history
+        function clearChatHistory() {
+            var chatHistory = document.getElementById("chat-history");
+            chatHistory.innerHTML = '';
+        }
+
+        // JavaScript function to scroll to the bottom of the chat history
+        function scrollToBottom() {
+            var chatHistory = document.getElementById("chat-history");
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // Call scrollToBottom initially and after each message is added
+        window.onload = scrollToBottom;
+        document.addEventListener("DOMContentLoaded", function () {
+            var sendButton = document.getElementById("send-button");
+            sendButton.addEventListener("click", scrollToBottom);
+        });
+    </script>
+     <script async src="https://cse.google.com/cse.js?cx=96b7b695dbdff498d">
+    </script>
+    <div class="gcse-search"></div>
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header">OMS AI Chatbot</div>
+
+        <div id="chat-history" class="chat-history">
+            {% for message in chat_history %}
+            <div class="message user-message">{{ message.user }}</div>
+            <div class="message bot-message">
+                {% if message.bot %}
+                {% set parts = message.bot.split('\n\n') %}
+                {% if parts|length > 1 %}
+                <p>{{ parts[0] }}</p>
+                {% set results = parts[1:] %}
+                {% for result in results %}
+                {% if result.startswith("**") %}
+                {% set title = result.split("**")[1] %}
+                {% set url = result.split("**")[2] %}
+                <p><a href="{{ url }}" target="_blank">{{ title }}</a></p>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <p>{{ message.bot }}</p>
+                {% endif %}
+                {% else %}
+                No results found.
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="input-container">
+            <form action="/send" method="post" id="chat-form">
+                <input type="text" name="user_input" id="user_input" placeholder="Type a message..." autocomplete="off">
+                <button id="send-button" type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
